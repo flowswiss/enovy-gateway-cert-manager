@@ -1,5 +1,4 @@
-# Envoy Gateway v2 with cert-manager (Out-of-the-Box Solution)
-
+# Envoy Gateway v2 with cert-manager
 Complete, working configuration for Envoy Gateway with cert-manager and Let's Encrypt certificates using Gateway API.
 
 ## ✅ What Works
