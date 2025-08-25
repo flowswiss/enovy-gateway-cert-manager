@@ -5,11 +5,13 @@ Complete, working configuration for Envoy Gateway with cert-manager and Let's En
 ## ✅ What Works
 
 This configuration has been tested and works reliably with:
-- **Gateway API v1.3.0** (Latest stable)
-- **Envoy Gateway v1.3.2** (Latest stable)
-- **cert-manager v1.16.2** (Stable with working Gateway API support)
+- **Gateway API v1.3.0** (Latest stable as of August 2025)
+- **Envoy Gateway v1.5.0** (Latest stable as of August 2025) 
+- **cert-manager v1.18.2** (Latest version with working `--enable-gateway-api` flag)
 - **Let's Encrypt** HTTP-01 challenge via Gateway API
 - **MetalLB** LoadBalancer with fixed IP assignment
+
+Note: We use cert-manager v1.18.2 which is the latest version. The `--enable-gateway-api` flag works correctly in this version.
 
 ## 🚀 Quick Start
 
@@ -31,11 +33,11 @@ helm repo update
 helm upgrade --install eg eg/gateway \
   --namespace envoy-gateway-system \
   --create-namespace \
-  --version v1.3.2 \
+  --version v1.5.0 \
   --wait
 
 # Step 3: Install cert-manager
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.yaml
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.2/cert-manager.yaml
 
 # Wait for cert-manager to be ready
 kubectl wait --for=condition=available --timeout=300s deployment/cert-manager -n cert-manager
@@ -51,7 +53,7 @@ kubectl patch deployment cert-manager -n cert-manager --type='json' -p='[
       "--v=2",
       "--cluster-resource-namespace=$(POD_NAMESPACE)",
       "--leader-election-namespace=kube-system",
-      "--acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.16.2",
+      "--acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.18.2",
       "--max-concurrent-challenges=60",
       "--enable-gateway-api"
     ]
@@ -176,7 +178,7 @@ kubectl delete -f letsencrypt-issuers.yaml --ignore-not-found=true
 kubectl delete -f gateway-resources.yaml --ignore-not-found=true
 
 # Uninstall cert-manager
-kubectl delete -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.2/cert-manager.yaml --ignore-not-found=true
+kubectl delete -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.2/cert-manager.yaml --ignore-not-found=true
 
 # Uninstall Envoy Gateway
 helm uninstall eg -n envoy-gateway-system
@@ -188,11 +190,20 @@ kubectl delete -f https://github.com/kubernetes-sigs/gateway-api/releases/downlo
 s
 ## 📝 Important Notes
 
+### Version Summary
+| Component | Version | Status |
+|-----------|---------|--------|
+| **Gateway API** | v1.3.0 | Latest stable |
+| **Envoy Gateway** | v1.5.0 | Latest stable |
+| **cert-manager** | v1.18.2 | Latest with working `--enable-gateway-api` |
+
 ### Why Not Helm for cert-manager?
 - Helm chart doesn't properly support Gateway API
 - Missing RBAC permissions for Gateway API resources
 - Feature gates don't work reliably
 - kubectl installation with manual patching is more reliable
+
+**Note:** Envoy Gateway uses Helm successfully - the issue is only with cert-manager's Gateway API support!
 
 ## 📚 References
 

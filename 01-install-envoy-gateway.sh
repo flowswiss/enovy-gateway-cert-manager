@@ -1,8 +1,8 @@
 #!/bin/bash
 # Install Envoy Gateway
-# Version: v1.3.2 (Latest stable)
+# Version: v1.5.0 (Latest stable)
 
-echo "Installing Envoy Gateway v1.3.2..."
+echo "Installing Envoy Gateway v1.5.0..."
 
 # Add Helm repo
 helm repo add eg https://gateway.envoyproxy.io
@@ -12,7 +12,7 @@ helm repo update
 helm upgrade --install eg eg/gateway \
   --namespace envoy-gateway-system \
   --create-namespace \
-  --version v1.3.2 \
+  --version v1.5.0 \
   --wait
 
 echo ""
