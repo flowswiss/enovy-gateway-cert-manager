@@ -1,0 +1,44 @@
+# Certificate for juhu.dev.k8s.cloudbit.ch
+# Uses Let's Encrypt with Gateway API HTTP-01 challenge
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: juhu-tls-cert
+  namespace: default
+spec:
+  # Secret name - must match the one referenced in Gateway
+  secretName: juhu-tls-cert
+  
+  # Issuer reference
+  issuerRef:
+    name: letsencrypt-staging  # Start with staging for testing
+    # name: letsencrypt-prod  # Switch to this for production
+    kind: ClusterIssuer
+    group: cert-manager.io
+  
+  # Common name
+  commonName: juhu.dev.k8s.cloudbit.ch
+  
+  # DNS names for the certificate
+  dnsNames:
+  - juhu.dev.k8s.cloudbit.ch
+  # Add more domains if needed:
+  # - www.juhu.dev.k8s.cloudbit.ch
+  
+  # Certificate validity
+  duration: 2160h    # 90 days
+  renewBefore: 720h  # Renew 30 days before expiry
+  
+  # Private key configuration
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  
+  # Key usages
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  - client auth
